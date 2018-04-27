@@ -1,0 +1,124 @@
+<html>
+<head>
+  <title>Project 3 Final</title>
+<script>
+  var canvas;
+  var context;
+  var lightnings = [];
+  var particles;
+  var timer;
+  function degreesToRadians(degrees) {
+    return (degrees * Math.PI)/180;
+  }
+  function makeParticles(a) {
+    particles = [];
+    for (var a=0; a<100; a++) {
+      particles.push(new Particle());
+    }
+  }
+  function moveParticles() {
+      var p = particles[a];
+      context.beginPath();
+      context.arc(p.x, p.y, p.radius, 30, degreesToRadians(360), true);
+      context.fillStyle = p.color;
+      context.fill();
+      //move the particle
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < -50) {
+        p.x = canvas.width + 50;
+      }
+      if (p.y < -50) {
+        p.y = canvas.height + 50;
+      }
+      if (p.x > canvas.width + 50) {
+        p.x = -50;
+      }
+      if (p.y > canvas.height + 50) {
+        p.y = -50;
+      }
+    }
+  function Particle() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.vx = Math.random() * 10 - 5;
+    this.vy = Math.random() * 10 - 5;
+    var colors = ['darkred'];
+    this.color = colors[Math.floor(Math.random() * colors.length)];
+    this.radius = 15;
+  }
+  window.onload = function () {
+    canvas = document.getElementById('canvas');
+    context = canvas.getContext('2d');
+    makeParticles();
+    timer = setInterval(moveParticles, 10);
+    //make all the Particles
+    //move the particles every 100 milliseconds
+  }
+
+
+  function init() {
+    canvas = document.getElementById('canvas');
+    context = canvas.getContext('2d');
+    //resize canvas fit the window
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas, false);
+    window.addEventListener('orientationchange', resizeCanvas, false);
+    //add a shape where the user clicks
+    canvas.onclick = function(event) {
+      handleClick(event.clientX, event.clientY);
+    };
+  }
+  function Lightning(x,y,color) {
+    this.x = x;
+    this.y = y;
+    this.color = color;
+  }
+  function handleClick(x,y) {
+    var colors = ['orange','gold','yellow'];
+    var color = colors[Math.floor(Math.random()*colors.length)];
+    lightnings.push(new Lightning(x, y, color));
+    for (var i=0; i < lightnings.length; i++) {
+      drawLightning(lightnings[i]);
+    }
+  }
+  function drawLightning(lightning) {
+    context.beginPath(); //shazam lightning bolt
+    context.moveTo(lightning.x,lightning.y);
+    context.lineTo(lightning.x - 5,lightning.y + 25);
+    context.lineTo(lightning.x,lightning.y + 25);
+    context.lineTo(lightning.x - 5,lightning.y + 50);
+    context.lineTo(lightning.x,lightning.y + 50);
+    context.lineTo(lightning.x,lightning.y + 85);
+    context.lineTo(lightning.x + 25,lightning.y + 50);
+    context.lineTo(lightning.x + 20,lightning.y + 50);
+    context.lineTo(lightning.x + 25,lightning.y + 25);
+    context.lineTo(lightning.x + 20,lightning.y + 25);
+    context.lineTo(lightning.x + 25,lightning.y);
+    context.fillStyle = lightning.color;
+    context.strokeStyle = 'red';
+    context.fill();
+    context.font = '20px impact';
+    context.strokeText('SHAZAM!!!', lightning.x - 25, lightning.y - 10);
+  }
+  function resizeCanvas() {
+    canvas.width = window.innerWidth-10;
+    canvas.height = window.innerHeight-20;
+    fillBackgroundColor();
+    for (var i=0; i < lightnings.length; i++) {
+      drawLightning(lightnings[i]);
+    }
+  }
+  function fillBackgroundColor() {
+    var grd=context.createRadialGradient(canvas.width * .5,canvas.height * .5,50,canvas.width * .5,canvas.height * .5,450);
+      grd.addColorStop(0,'darkgrey');
+      grd.addColorStop(1,'lightblue');
+    context.fillStyle = grd;
+    context.fillRect(0,0,canvas.width,canvas.height);
+  }
+  window.onload = init;
+</script>
+</head>
+<body>
+  <canvas id="canvas" width="500" height="500">
+</body>

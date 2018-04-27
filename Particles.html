@@ -1,0 +1,66 @@
+<html>
+<head>
+<title>Particles</title>
+<script>
+  var canvas;
+  var context;
+  var particles;
+  var timer;
+  function degreesToRadians(degrees) {
+    return (degrees * Math.PI)/180;
+  }
+  function makeParticles() {
+    particles = [];
+    for (var i=0; i<30; i++) {
+      particles.push(new Particle());
+    }
+  }
+  function moveParticles() {
+    for (var i=0; i <particles.length; i++) {
+      //draw the particles
+      var p = particles[i];
+      context.beginPath();
+      context.arc(p.x, p.y, p.radius, 30, degreesToRadians(360), true);
+      context.fillStyle = p.color;
+      context.fill();
+      //move the particle
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < -50) {
+        p.x = canvas.width + 50;
+      }
+      if (p.y < -50) {
+        p.y = canvas.height + 50;
+      }
+      if (p.x > canvas.width + 50) {
+        p.x = -50;
+      }
+      if (p.y > canvas.height + 50) {
+        p.y = -50;
+      }
+    }
+  }
+  function Particle() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.vx = Math.random() * 10 - 5;
+    this.vy = Math.random() * 10 - 5;
+    var colors = ['darkred'];
+    this.color = colors[Math.floor(Math.random() * colors.length)];
+    this.radius = 15;
+  }
+
+  window.onclick = function() {
+    canvas = document.getElementById('canvas');
+    context = canvas.getContext('2d');
+    makeParticles();
+    timer = setInterval(moveParticles, 10);
+    //make all the Particles
+    //move the particles every 100 milliseconds
+  }
+</script>
+</head>
+<body>
+  <canvas id="canvas" width="500" height"500"></canvas>
+</body>
+</html>
